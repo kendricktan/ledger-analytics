@@ -1,31 +1,14 @@
 import React, { Component } from 'react'
 import ReactEcharts from 'echarts-for-react'
 import echarts from 'echarts'
-import fetch from 'node-fetch'
 
 class Timeline extends Component {
-  state = {
-    date: [],
-    data: []
-  }
-
-  componentDidUpdate = (prevProps, prevState, snapshot) => {
-    const qs = this.props.queryString
-    const bc = this.props.baseCommodity
-    if (qs !== prevProps.queryString || bc !== prevProps.baseCommodity) {
-      if (qs !== undefined && qs.length > 0) {
-        fetch(`http://localhost:3000/timeline/` + qs + (bc !== undefined ? `/` + bc : ''))
-          .then(x => x.json())
-          .then(json => this.setState({
-            date: json.date,
-            data: json.data
-          }))
-      }
-    }
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (!nextProps.isTyping && nextProps.timelineData !== this.props.timelineData && nextProps.timelineDates !== this.props.timelineDates)
   }
 
   render () {
-    const {data, date} = this.state
+    const { queryString, timelineData, timelineDates, fetchTimelineError } = this.props
 
     const option = {
       tooltip: {
@@ -36,7 +19,7 @@ class Timeline extends Component {
       },
       title: {
         left: 'center',
-        text: 'Daily'
+        text: 'Daily Credit/Debit From Account(s) ' + queryString + '*'
       },
       toolbox: {
         feature: {
@@ -51,12 +34,12 @@ class Timeline extends Component {
         name: 'Date',
         type: 'category',
         boundaryGap: false,
-        data: date
+        data: timelineData
       },
       yAxis: {
         name: 'Amount (' + this.props.baseCommodity + ')',
         type: 'value',
-        boundaryGap: [0, '100%']
+        boundaryGap: [0, '10%']
       },
       dataZoom: [{
         type: 'inside',
@@ -98,9 +81,27 @@ class Timeline extends Component {
               }])
             }
           },
-          data: data
+          data: timelineDates
         }
       ]
+    }
+
+    // If timeline fetch has an error, its likely
+    // because of multiple commodities
+    if (fetchTimelineError !== undefined) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Unable to fetch timeline data (try changing your base currency/commodity)
+        </div>
+      )
+    }
+
+    if (timelineData.length === 0 || timelineDates.length === 0) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Insufficient data to construct timeline
+        </div>
+      )
     }
 
     return (

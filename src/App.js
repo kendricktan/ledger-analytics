@@ -16,11 +16,6 @@ const COMPARISON = '1'
 const GROWTH = '2'
 
 class QueryBox extends Component {
-  state = {
-    commodities: [],
-    typingTimer: undefined
-  }
-
   // Different hints for different types
   getPlaceholderText = () => {
     switch (this.props.queryType) {
@@ -38,19 +33,8 @@ class QueryBox extends Component {
     }
   }
 
-  // Get different commodities
-  componentDidMount = () => {
-    fetch(`http://127.0.0.1:3000/commodities`)
-      .then(res => res.json())
-      .then(json => {
-        const c = json.commodities.length > 0 ? json.commodities[0] : undefined
-
-        this.setState({ commodities: json.commodities })
-        this.props.updateBaseCommodity({target: {value: c}})
-      })
-  }
-
   handleQuerying = (e) => {
+    this.props.updateIsTyping(true)
     clearTimeout(this.timer)
 
     // Thanks JavaScript
@@ -58,6 +42,7 @@ class QueryBox extends Component {
 
     this.timer = setTimeout(() => {
       this.props.updateQueryString({target: {value: v}})
+      this.props.updateIsTyping(false)
     }, TYPING_INTERVAL)
   }
 
@@ -81,11 +66,11 @@ class QueryBox extends Component {
           <option value={GROWTH}>Growth</option>
         </select>
         &nbsp;
-        { this.state.commodities.length > 0
+        { this.props.commodities.length > 0
           ? (
             <select style={{width: '10%'}} onChange={this.props.updateBaseCommodity}>
               {
-                this.state.commodities.map(x => <option key={x} value={x}>{x}</option>)
+                this.props.commodities.map(x => <option key={x} value={x}>{x}</option>)
               }
             </select>
           ) : <div />
@@ -120,10 +105,60 @@ class Overview extends Component {
 
 class App extends Component {
   state = {
+    // QueryBox
     queryString: '',
     queryType: OVERVIEW,
-    baseCommodity: undefined
+    commodities: [],
+    baseCommodity: undefined,
+    isTyping: false,
+
+    // Timeline
+    timelineZoomStart: 0,
+    timelineZoomEnd: 0,
+    timelineData: [],
+    timelineDates: [],
+    fetchTimelineError: undefined
   };
+
+  componentDidMount = () => {
+    // On mount, fetch a list of base commodities
+    fetch(`http://127.0.0.1:3000/commodities`)
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+          commodities: json.commodities,
+          baseCommodity: json.commodities.length > 0 ? json.commodities[0] : undefined
+        })
+      })
+  }
+
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    const { queryString, baseCommodity } = this.state
+
+    // Update component only if queryString is not ''
+    if (queryString === undefined || queryString.length === 0) {
+      return
+    }
+
+    // And if queryString/baseCommodity has changed
+    if (queryString === prevState.queryString && baseCommodity === prevState.baseCommodity) {
+      return
+    }
+
+    // Fetches timeline data
+    fetch(`http://localhost:3000/timeline/` + queryString + (baseCommodity !== undefined ? `/` + baseCommodity : ''))
+      .then(x => x.json())
+      .then(json => {
+        this.setState({
+          timelineData: json.date,
+          timelineDates: json.data,
+          fetchTimelineError: undefined
+        })
+      })
+      .catch(e => {
+        this.setState({timelineDates: [], timelineData: [], fetchTimelineError: e})
+      })
+  }
 
   updateQueryString = (e) => {
     this.setState({queryString: e.target.value})
@@ -137,12 +172,34 @@ class App extends Component {
     this.setState({baseCommodity: e.target.value})
   }
 
+  updateIsTyping = (b) => {
+    this.setState({isTyping: b})
+  }
+
   getInnerContent = () => {
+    const str = this.state.isTyping ? 'Loading...' : 'Enter an account in the searchbar to get started'
+
+    if (this.state.queryString.length === 0) {
+      return (
+        <Row center='xs'>
+          <Col>
+            {str}
+          </Col>
+        </Row>
+      )
+    }
+
     switch (this.state.queryType) {
       case OVERVIEW:
         return <Overview {...this.state} />
       default:
-        return <div>Unimplmented</div>
+        return (
+          <Row center='xs'>
+            <Col xs='6'>
+              Unimplemented
+            </Col>
+          </Row>
+        )
     }
   }
 
@@ -155,12 +212,13 @@ class App extends Component {
             updateQueryString={this.updateQueryString}
             updateQueryType={this.updateQueryType}
             updateBaseCommodity={this.updateBaseCommodity}
+            updateIsTyping={this.updateIsTyping}
           />
         </Row>
         {
           this.getInnerContent()
         }
-        <Row>
+        <Row center='xs'>
           <hr style={{width: '85%'}} />
           {
             <div style={{textAlign: 'center', padding: '20px', width: '100%'}}>
