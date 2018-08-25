@@ -1,0 +1,26 @@
+{
+  "name": "ledger-analytics",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "echarts": "^4.1.0",
+    "echarts-for-react": "^2.0.14",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-flexbox-grid": "^2.1.2",
+    "react-scripts": "1.1.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "standard": "^11.0.1"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  }
+}
