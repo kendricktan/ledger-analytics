@@ -1,22 +1,31 @@
 import React, { Component } from 'react'
 import ReactEcharts from 'echarts-for-react'
 import echarts from 'echarts'
+import fetch from 'node-fetch'
 
 class Timeline extends Component {
-  render () {
-    var base = +new Date(1968, 9, 3)
-    var oneDay = 24 * 3600 * 1000
-    var date = []
+  state = {
+    date: [],
+    data: []
+  }
 
-    var data = [Math.random() * 300]
-
-    for (var i = 1; i < 50; i++) {
-      var now = new Date(base += oneDay)
-      date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'))
-      data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]))
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    const qs = this.props.queryString
+    const bc = this.props.baseCommodity
+    if (qs !== prevProps.queryString || bc !== prevProps.baseCommodity) {
+      if (qs !== undefined && qs.length > 0) {
+        fetch(`http://localhost:3000/timeline/` + qs + (bc !== undefined ? `/` + bc : ''))
+          .then(x => x.json())
+          .then(json => this.setState({
+            date: json.date,
+            data: json.data
+          }))
+      }
     }
+  }
 
-    console.log(data)
+  render () {
+    const {data, date} = this.state
 
     const option = {
       tooltip: {
@@ -27,7 +36,7 @@ class Timeline extends Component {
       },
       title: {
         left: 'center',
-        text: 'Monthly '
+        text: 'Daily'
       },
       toolbox: {
         feature: {
@@ -39,11 +48,13 @@ class Timeline extends Component {
         }
       },
       xAxis: {
+        name: 'Date',
         type: 'category',
         boundaryGap: false,
         data: date
       },
       yAxis: {
+        name: 'Amount (' + this.props.baseCommodity + ')',
         type: 'value',
         boundaryGap: [0, '100%']
       },
@@ -66,7 +77,7 @@ class Timeline extends Component {
       }],
       series: [
         {
-          name: '模拟数据',
+          name: 'Amount',
           type: 'line',
           smooth: true,
           symbol: 'none',

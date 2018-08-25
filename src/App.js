@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-flexbox-grid'
+import fetch from 'node-fetch'
 
 import ScatterChart from './components/scatter-chart'
 import PieChart from './components/pie-chart'
@@ -8,11 +9,18 @@ import OverviewComments from './components/overview-comments'
 
 import './App.css'
 
+const TYPING_INTERVAL = 1000
+
 const OVERVIEW = '0'
 const COMPARISON = '1'
 const GROWTH = '2'
 
 class QueryBox extends Component {
+  state = {
+    commodities: [],
+    typingTimer: undefined
+  }
+
   // Different hints for different types
   getPlaceholderText = () => {
     switch (this.props.queryType) {
@@ -30,6 +38,29 @@ class QueryBox extends Component {
     }
   }
 
+  // Get different commodities
+  componentDidMount = () => {
+    fetch(`http://127.0.0.1:3000/commodities`)
+      .then(res => res.json())
+      .then(json => {
+        const c = json.commodities.length > 0 ? json.commodities[0] : undefined
+
+        this.setState({ commodities: json.commodities })
+        this.props.updateBaseCommodity({target: {value: c}})
+      })
+  }
+
+  handleQuerying = (e) => {
+    clearTimeout(this.timer)
+
+    // Thanks JavaScript
+    const v = e.target.value
+
+    this.timer = setTimeout(() => {
+      this.props.updateQueryString({target: {value: v}})
+    }, TYPING_INTERVAL)
+  }
+
   render () {
     // 1. Overview is a simple area chart with assets/expenses trending over time
     // (should be able to click n zoom) (With a sunburst at the bottom)
@@ -40,15 +71,25 @@ class QueryBox extends Component {
 
     return (
       <Col xs={10}>
-        <input style={{width: '75%'}}
+        <input style={{width: '65%'}}
           placeholder={placeholderText}
-          onChange={this.props.updateQueryString}
+          onChange={this.handleQuerying}
         />&nbsp;&nbsp;
-        <select style={{width: '20%'}} onChange={this.props.updateQueryType}>
+        <select style={{width: '15%'}} onChange={this.props.updateQueryType}>
           <option value={OVERVIEW}>Overview</option>
           <option value={COMPARISON}>Comparison</option>
           <option value={GROWTH}>Growth</option>
         </select>
+        &nbsp;
+        { this.state.commodities.length > 0
+          ? (
+            <select style={{width: '10%'}} onChange={this.props.updateBaseCommodity}>
+              {
+                this.state.commodities.map(x => <option key={x} value={x}>{x}</option>)
+              }
+            </select>
+          ) : <div />
+        }
       </Col>
     )
   }
@@ -59,7 +100,7 @@ class Overview extends Component {
     return (
       <div>
         <Row>
-          <Timeline />
+          <Timeline {...this.props} />
         </Row>
         <Row>
           <ScatterChart />
@@ -81,7 +122,7 @@ class App extends Component {
   state = {
     queryString: '',
     queryType: OVERVIEW,
-    baseCommodity: 'AUD'
+    baseCommodity: undefined
   };
 
   updateQueryString = (e) => {
@@ -92,10 +133,14 @@ class App extends Component {
     this.setState({queryType: e.target.value})
   }
 
+  updateBaseCommodity = (e) => {
+    this.setState({baseCommodity: e.target.value})
+  }
+
   getInnerContent = () => {
     switch (this.state.queryType) {
       case OVERVIEW:
-        return <Overview />
+        return <Overview {...this.state} />
       default:
         return <div>Unimplmented</div>
     }
@@ -109,6 +154,7 @@ class App extends Component {
             {...this.state}
             updateQueryString={this.updateQueryString}
             updateQueryType={this.updateQueryType}
+            updateBaseCommodity={this.updateBaseCommodity}
           />
         </Row>
         {
@@ -118,7 +164,7 @@ class App extends Component {
           <hr style={{width: '85%'}} />
           {
             <div style={{textAlign: 'center', padding: '20px', width: '100%'}}>
-              Made by <a href='https://kndrck.co'>Kendrick Tan</a> | <a href='#'>Source Code</a> | MIT Licensed
+              Made by <a href='https://kndrck.co'>Kendrick Tan</a> | <a href='https://github.com/kendricktan/ledger-analytics'>Source Code</a> | MIT Licensed
             </div>
           }
         </Row>
