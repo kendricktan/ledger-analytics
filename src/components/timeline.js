@@ -103,7 +103,7 @@ class Timeline extends Component {
     if (timelineData.length === 0 || timelineDates.length === 0) {
       return (
         <div style={{textAlign: 'center', width: '100%'}}>
-          Insufficient data to construct timeline
+          Insufficient data to construct Timeline
         </div>
       )
     }

@@ -1,30 +1,78 @@
 import React, { Component } from 'react'
+import { Row, Col } from 'react-flexbox-grid'
 import ReactEcharts from 'echarts-for-react'
 
 class PieChart extends Component {
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (
+      (
+        !nextProps.isTyping &&
+        nextProps.scatterData !== this.props.scatterData &&
+        nextProps.scatterAccounts !== this.props.scatterAccounts
+      ) ||
+      nextProps.timelineZoomEnd !== this.props.timelineZoomEnd ||
+      nextProps.timelineZoomStart !== this.props.timelineZoomStart
+    )
+  }
+
   render () {
-    const innerdata = ['Apple', 'Banana', 'Oranges', 'Cakes', 'Mint']
+    // Reusing data from scatter plots (just xforming them more)
+    const { queryString, timelineDates, timelineZoomStart, timelineZoomEnd, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
+
+    // If scatter fetch has an error, its likely
+    // because of multiple commodities
+    if (fetchScatterError !== undefined) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Unable to fetch pie chart data (try changing your base currency/commodity)
+        </div>
+      )
+    }
+
+    if (scatterAccounts.length === 0 || scatterAccounts.length === 0) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Insufficient data to construct PieChart
+        </div>
+      )
+    }
+
+    const dateLength = timelineDates.length
+
+    // Make scatter plot representative of timeline zoom
+    const startIndex = parseInt(timelineZoomStart * dateLength / 100) - 1
+    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
+
+    const endIndex = parseInt(timelineZoomEnd * dateLength / 100) - 1
+    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
+
+    const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
+    const endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
 
     const data = {
-      legendData: innerdata,
-      selected: innerdata.reduce((pv, cv) => {
+      legendData: scatterAccounts,
+      selected: scatterAccounts.reduce((pv, cv) => {
         pv[cv] = true
         return pv
       }, {}),
-      seriesData: innerdata.map((x) => {
-        return {name: x, value: Math.round(Math.random() * 10)}
+      seriesData: scatterAccounts.map((x, idx) => {
+        const sumOfDataWithinRange = scatterData[idx].filter((arr) => {
+          return arr[2] >= startDate && arr[2] <= endDate
+        }).reduce((acc, obj) => acc + obj[1], 0)
+
+        return {name: x, value: Math.round(sumOfDataWithinRange, 2)}
       })
     }
 
     const option = {
       title: {
-        text: 'QueryText',
-        subtext: 'Breakdown',
+        text: queryString,
+        subtext: 'Credit/Debit Breakdown',
         x: 'center'
       },
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
+        formatter: '{b}<br/>' + baseCommodity + ': ' + '{c} ({d}%)'
       },
       legend: {
         type: 'scroll',
@@ -38,7 +86,7 @@ class PieChart extends Component {
       },
       series: [
         {
-          name: '姓名',
+          name: 'Account',
           type: 'pie',
           radius: '55%',
           center: ['40%', '50%'],

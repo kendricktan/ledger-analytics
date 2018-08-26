@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactEcharts from 'echarts-for-react'
+import { frenchPallate } from './colors'
 
 class ScatterChart extends Component {
   shouldComponentUpdate = (nextProps, nextState) => {
@@ -17,25 +18,43 @@ class ScatterChart extends Component {
   render () {
     const { timelineDates, timelineZoomStart, timelineZoomEnd, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
 
+    // If scatter fetch has an error, its likely
+    // because of multiple commodities
+    if (fetchScatterError !== undefined) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Unable to fetch Scatter data (try changing your base currency/commodity)
+        </div>
+      )
+    }
+
+    if (scatterAccounts.length === 0 || scatterAccounts.length === 0) {
+      return (
+        <div style={{textAlign: 'center', width: '100%'}}>
+          Insufficient data to construct ScatterPlot
+        </div>
+      )
+    }
+
     const itemStyle = {
       normal: {
         opacity: 0.8
       }
     }
 
+    const dateLength = timelineDates.length
+
+    // Make scatter plot representative of timeline zoom
+    const startIndex = parseInt(timelineZoomStart * dateLength / 100) - 1
+    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
+
+    const endIndex = parseInt(timelineZoomEnd * dateLength / 100) - 1
+    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
+
+    const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
+    const endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
+
     const series = scatterAccounts.map((acc, idx) => {
-      const dateLength = timelineDates.length
-
-      // Make scatter plot representative of timeline zoom
-      const startIndex = parseInt(timelineZoomStart * dateLength / 100) - 1
-      const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
-
-      const endIndex = parseInt(timelineZoomEnd * dateLength / 100) - 1
-      const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
-
-      const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
-      const endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
-
       // scatterData[idx] is of type
       /*
       [
@@ -60,18 +79,14 @@ class ScatterChart extends Component {
     const option = {
       legend: {
         y: 'top',
+        left: '20%',
         data: scatterAccounts,
         textStyle: {
           color: '#000',
           fontSize: 16
         }
       },
-      grid: {
-        x: '10%',
-        x2: 150,
-        y: '18%',
-        y2: '10%'
-      },
+      color: frenchPallate,
       tooltip: {
         padding: 10,
         backgroundColor: '#222',
@@ -132,24 +147,6 @@ class ScatterChart extends Component {
         }
       },
       series: series
-    }
-
-    // If scatter fetch has an error, its likely
-    // because of multiple commodities
-    if (fetchScatterError !== undefined) {
-      return (
-        <div style={{textAlign: 'center', width: '100%'}}>
-          Unable to fetch Scatter data (try changing your base currency/commodity)
-        </div>
-      )
-    }
-
-    if (scatterAccounts.length === 0 || scatterAccounts.length === 0) {
-      return (
-        <div style={{textAlign: 'center', width: '100%'}}>
-          Insufficient data to construct ScatterPlot
-        </div>
-      )
     }
 
     return (

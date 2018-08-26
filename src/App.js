@@ -20,7 +20,7 @@ class QueryBox extends Component {
   getPlaceholderText = () => {
     switch (this.props.queryType) {
       case OVERVIEW:
-        return 'assets:bank1'
+        return 'assets:bank1 and not assets:super'
 
       case COMPARISON:
         return 'assets,expenses,...'
@@ -92,10 +92,10 @@ class Overview extends Component {
         </Row>
         <Row>
           <Col xs={7}>
-            <PieChart />
+            <PieChart {...this.props} />
           </Col>
           <Col xs={5}>
-            <OverviewComments />
+            <OverviewComments {...this.props} />
           </Col>
         </Row>
       </div>
@@ -123,6 +123,8 @@ class App extends Component {
     scatterAccounts: [],
     scatterData: [],
     fetchScatterError: undefined
+
+    // Pie Chart reuses data from Scatter Chart
   };
 
   componentDidMount = () => {
@@ -168,6 +170,7 @@ class App extends Component {
       })
 
     // Fetches Scatter Chart Data
+    // And piechart data
     let accounts = []
     fetch(`http://localhost:3000/accounts?account=` + queryString)
       .then(x => x.json())
@@ -199,7 +202,8 @@ class App extends Component {
         ]
         */
 
-        const formattedData = timelineDataArray.map((timelineData, idx) => {
+        // ScatterChart
+        const scatterData = timelineDataArray.map((timelineData, idx) => {
           const dates = timelineData.date.map((d) => {
             const dateParts = d.split('/')
             // JavaScript counts months from 0, go figure
@@ -212,9 +216,11 @@ class App extends Component {
           return days.map((x, idx) => [x, data[idx], dates[idx], account])
         })
 
+        // PieChart
+
         this.setState({
           scatterAccounts: accounts,
-          scatterData: formattedData,
+          scatterData,
           fetchScatterError: undefined
         })
       })
