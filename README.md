@@ -13,9 +13,13 @@ ledger-analytics -f <your journal file>
 ```
 
 # Preview
-![](https://thumbs.gfycat.com/PaleHeartfeltLice-size_restricted.gif)
+<center style="width: 100%">
+  <img width="75%" src="https://thumbs.gfycat.com/PaleHeartfeltLice-size_restricted.gif"/>
+</center>
 
-![](https://thumbs.gfycat.com/InbornRaggedCarpenterant-size_restricted.gif)
+<center style="width: 100%">
+  <img width="75%" src="https://thumbs.gfycat.com/InbornRaggedCarpenterant-size_restricted.gif"/>
+</center>
 
 # Development
 
