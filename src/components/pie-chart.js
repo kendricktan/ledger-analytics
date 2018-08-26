@@ -60,7 +60,7 @@ class PieChart extends Component {
           return arr[2] >= startDate && arr[2] <= endDate
         }).reduce((acc, obj) => acc + obj[1], 0)
 
-        return {name: x, value: Math.round(sumOfDataWithinRange, 2)}
+        return {name: x, value: sumOfDataWithinRange.toFixed(2)}
       })
     }
 
