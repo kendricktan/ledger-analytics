@@ -1,6 +1,6 @@
 # Ledger Analytics
 
-Analytics for ledger-cli. Built on Node v9.11.1.
+Analytics/Visualization tool for ledger-cli. Built on Node v9.11.1.
 
 __Make sure that `ledger-cli` is installed in your $PATH__ (`ledger --help` in a terminal should open up its `man` page)
 
