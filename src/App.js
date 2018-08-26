@@ -85,10 +85,10 @@ class Overview extends Component {
     return (
       <div>
         <Row>
-          <Timeline {...this.props} />
+          <Timeline {...this.props} updateTimelineZoom={this.props.updateTimelineZoom} />
         </Row>
         <Row>
-          <ScatterChart />
+          <ScatterChart {...this.props} />
         </Row>
         <Row>
           <Col xs={7}>
@@ -114,10 +114,15 @@ class App extends Component {
 
     // Timeline
     timelineZoomStart: 0,
-    timelineZoomEnd: 0,
+    timelineZoomEnd: 100,
     timelineData: [],
     timelineDates: [],
-    fetchTimelineError: undefined
+    fetchTimelineError: undefined,
+
+    // Scatter Chart
+    scatterAccounts: [],
+    scatterData: [],
+    fetchScatterError: undefined
   };
 
   componentDidMount = () => {
@@ -145,18 +150,80 @@ class App extends Component {
       return
     }
 
+    const commodityArg = (baseCommodity !== undefined ? `/` + baseCommodity : '')
+
     // Fetches timeline data
-    fetch(`http://localhost:3000/timeline/` + queryString + (baseCommodity !== undefined ? `/` + baseCommodity : ''))
+    // Commodity can be defined if user only has one commodity
+    fetch(`http://localhost:3000/timeline/` + queryString + commodityArg)
       .then(x => x.json())
       .then(json => {
         this.setState({
-          timelineData: json.date,
-          timelineDates: json.data,
+          timelineData: json.data,
+          timelineDates: json.date,
           fetchTimelineError: undefined
         })
       })
       .catch(e => {
         this.setState({timelineDates: [], timelineData: [], fetchTimelineError: e})
+      })
+
+    // Fetches Scatter Chart Data
+    let accounts = []
+    fetch(`http://localhost:3000/accounts?account=` + queryString)
+      .then(x => x.json())
+      .then(json => {
+        // Some mutation, but ceebs
+        accounts = json.accounts
+        // Map everything to a promise
+        // Then execute everything concurrently
+        const promises = json.accounts.map((x) => {
+          return fetch(`http://localhost:3000/timeline/` + x + commodityArg)
+            .then(x => x.json())
+        })
+
+        return Promise.all(promises)
+      })
+      .then(timelineDataArray => {
+        /* We get:
+
+        accounts: ["Account1:Type", "Account2:Type" ... ]
+        values : [
+          { data: [amount1, amount2...], date: [2018/08/1, 2018/08/2 ...] }
+        ]
+
+        Want:
+
+        [
+          [(day), (amount), Date(2018/08/01), "Account1:Type"],
+          [(day), (amount), Date(2018/08/02), "Account2:Type"],
+        ]
+        */
+
+        const formattedData = timelineDataArray.map((timelineData, idx) => {
+          const dates = timelineData.date.map((d) => {
+            const dateParts = d.split('/')
+            // JavaScript counts months from 0, go figure
+            return new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+          })
+          const days = dates.map(x => x.getDay())
+          const data = timelineData.data
+          const account = accounts[idx]
+
+          return days.map((x, idx) => [x, data[idx], dates[idx], account])
+        })
+
+        this.setState({
+          scatterAccounts: accounts,
+          scatterData: formattedData,
+          fetchScatterError: undefined
+        })
+      })
+      .catch((e) => {
+        this.setState({
+          scatterAccounts: [],
+          scatterData: [],
+          fetchScatterError: e
+        })
       })
   }
 
@@ -176,6 +243,13 @@ class App extends Component {
     this.setState({isTyping: b})
   }
 
+  updateTimelineZoom = (obj) => {
+    this.setState({
+      timelineZoomStart: obj.start,
+      timelineZoomEnd: obj.end
+    })
+  }
+
   getInnerContent = () => {
     const str = this.state.isTyping ? 'Loading...' : 'Enter an account in the searchbar to get started'
 
@@ -191,7 +265,7 @@ class App extends Component {
 
     switch (this.state.queryType) {
       case OVERVIEW:
-        return <Overview {...this.state} />
+        return <Overview {...this.state} updateTimelineZoom={this.updateTimelineZoom} />
       default:
         return (
           <Row center='xs'>

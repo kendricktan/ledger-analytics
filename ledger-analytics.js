@@ -39,18 +39,18 @@ app.get('/commodities', async (req, res, next) => {
   }
 })
 
-// Get data formatted for timeline
-app.get('/timeline/:account', async (req, res, next) => {
+// Get accounts
+app.get('/accounts', async (req, res, next) => {
   try {
-    const { account } = req.params
-    const { data, date } = await analyze.getTimelineData(program.file, account)
-    res.json({data, date})
+    const accounts = await analyze.getAccounts(program.file, req.query.account)
+    res.json({accounts})
   } catch (e) {
     next(e)
   }
 })
 
-app.get('/timeline/:account/:commodity', async (req, res, next) => {
+// Get timeline data
+app.get('/timeline/:account/:commodity?', async (req, res, next) => {
   try {
     const { commodity, account } = req.params
     const { data, date } = await analyze.getTimelineData(program.file, account, commodity)

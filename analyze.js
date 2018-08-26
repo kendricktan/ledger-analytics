@@ -42,3 +42,10 @@ module.exports.getTimelineData = async (file, account, commodity = undefined) =>
 
   return timelineData
 }
+
+module.exports.getAccounts = async (file, account) => {
+  const accountArg = account === undefined ? '' : account
+  const { stdout } = await exec(`ledger -f ` + file + ' accounts ' + accountArg)
+  const accounts = stdout.split('\n').filter(x => x.length > 0)
+  return accounts
+}

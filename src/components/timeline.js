@@ -4,7 +4,11 @@ import echarts from 'echarts'
 
 class Timeline extends Component {
   shouldComponentUpdate = (nextProps, nextState) => {
-    return (!nextProps.isTyping && nextProps.timelineData !== this.props.timelineData && nextProps.timelineDates !== this.props.timelineDates)
+    return (
+      !nextProps.isTyping &&
+      nextProps.timelineData !== this.props.timelineData &&
+      nextProps.timelineDates !== this.props.timelineDates
+    )
   }
 
   render () {
@@ -34,7 +38,7 @@ class Timeline extends Component {
         name: 'Date',
         type: 'category',
         boundaryGap: false,
-        data: timelineData
+        data: timelineDates
       },
       yAxis: {
         name: 'Amount (' + this.props.baseCommodity + ')',
@@ -81,7 +85,7 @@ class Timeline extends Component {
               }])
             }
           },
-          data: timelineDates
+          data: timelineData
         }
       ]
     }
@@ -111,8 +115,7 @@ class Timeline extends Component {
           notMerge
           lazyUpdate
           onEvents={{
-            dataZoom: (e) => console.log(e),
-            datarangeselected: (e) => console.log(e)
+            dataZoom: (e) => this.props.updateTimelineZoom(e)
           }}
         />
       </div>
