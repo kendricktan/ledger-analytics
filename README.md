@@ -10,6 +10,8 @@ Make sure [npm](https://docs.npmjs.com/cli/install) is installed
 npm install -g ledger-analytics
 
 ledger-analytics -f <your journal file>
+
+# Navigate to 127.0.0.1:3000 in your browser
 ```
 
 # Preview
