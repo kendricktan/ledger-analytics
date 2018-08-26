@@ -40,10 +40,10 @@ class OverviewComments extends Component {
     const dateLength = timelineDates.length
 
     // Make scatter plot representative of timeline zoom
-    const startIndex = parseInt(timelineZoomStart * dateLength / 100) - 1
+    const startIndex = parseInt(timelineZoomStart * dateLength / 100, 10) - 1
     const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
 
-    const endIndex = parseInt(timelineZoomEnd * dateLength / 100) - 1
+    const endIndex = parseInt(timelineZoomEnd * dateLength / 100, 10) - 1
     const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
 
     const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])

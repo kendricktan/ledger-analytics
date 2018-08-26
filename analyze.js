@@ -50,3 +50,22 @@ module.exports.getAccounts = async (file, account) => {
   const accounts = stdout.split('\n').filter(x => x.length > 0)
   return accounts
 }
+
+module.exports.getGrowth = async (file, account, commodity = undefined) => {
+  const commodityArg = (commodity !== undefined) ? ` -X ` + commodity : ``
+
+  const { stdout } = await exec(`ledger -f ` + file + ` ` + commodityArg + ` -J reg ` + account + ` -M --collapse`)
+  const growth = stdout
+    .split('\n')
+    .filter(x => x.length > 0)
+    .reduce((acc, x) => {
+      const xSplit = x.split(' ')
+      const date = xSplit[0].split('-').splice(0, 2).join('/')
+      const value = parseFloat(xSplit[1])
+
+      acc[date] = value
+
+      return acc
+    }, {})
+  return growth
+}

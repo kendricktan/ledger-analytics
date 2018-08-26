@@ -27,7 +27,7 @@ if (program.file === undefined) {
 app.use(cors())
 
 // Serve frontend
-app.use('/', express.static(path.join(__dirname, 'build')))
+app.use('/', express.static(path.join(__dirname, 'frontend')))
 
 // Get number of commodities
 app.get('/commodities', async (req, res, next) => {
@@ -56,6 +56,17 @@ app.get('/timeline/:account/:commodity?', async (req, res, next) => {
     const byMonth = (req.query.type || '').toLowerCase() === 'month'
     const { data, date } = await analyze.getTimelineData(program.file, account, commodity, byMonth)
     res.json({data, date})
+  } catch (e) {
+    next(e)
+  }
+})
+
+// Get growth data
+app.get('/growth/:account/:commodity?', async (req, res, next) => {
+  try {
+    const { account, commodity } = req.params
+    const growth = await analyze.getGrowth(program.file, account, commodity)
+    res.json({growth})
   } catch (e) {
     next(e)
   }

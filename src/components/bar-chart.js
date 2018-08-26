@@ -4,6 +4,13 @@ import echarts from 'echarts'
 import { frenchPallate } from './colors'
 
 export default class BarChart extends Component {
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return (
+      !nextProps.isTyping &&
+      nextProps.barData !== this.props.barData
+    )
+  }
+
   render () {
     const { barData, fetchBarError } = this.props
 
@@ -149,7 +156,7 @@ export default class BarChart extends Component {
         type: 'bar',
         barGap: 0,
         label: labelOption,
-        data: datesAscending.map(d => x.data[d])
+        data: datesAscending.map(d => Math.abs(x.data[d]))
       }
     })
 

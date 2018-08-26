@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import fetch from 'node-fetch'
 
+import StackedArea from './components/stacked-area'
 import BarChart from './components/bar-chart'
 import ScatterChart from './components/scatter-chart'
 import PieChart from './components/pie-chart'
@@ -21,13 +22,13 @@ class QueryBox extends Component {
   getPlaceholderText = () => {
     switch (this.props.queryType) {
       case OVERVIEW:
-        return 'assets:bank1 and not assets:super'
+        return 'assets:bank1 and not assets:pension'
 
       case COMPARISON:
-        return 'assets,expenses,...'
+        return 'income,expenses,...'
 
       case GROWTH:
-        return 'assets:bank2'
+        return 'assets'
 
       default:
         return 'Unknown Input Type'
@@ -83,6 +84,17 @@ class QueryBox extends Component {
 
 class Overview extends Component {
   render () {
+    // If comma in queryString then ask them to remove it
+    if (this.props.queryString.indexOf(',') !== -1) {
+      return (
+        <Row>
+          <div style={{textAlign: 'center', width: '100%'}}>
+            Please remove the comma. The comma is only used in `Comparison` mode.
+          </div>
+        </Row>
+      )
+    }
+
     return (
       <div>
         <Row>
@@ -129,7 +141,12 @@ class App extends Component {
 
     // Bar Chart
     barData: [],
-    fetchBarError: undefined
+    fetchBarError: undefined,
+
+    // Growth Chart (Stacked Area)
+    growthAccounts: [],
+    growthData: [],
+    fetchGrowthError: undefined
   };
 
   componentDidMount = () => {
@@ -271,6 +288,46 @@ class App extends Component {
           fetchBarError: e
         })
       })
+
+    // Fetches growth chart data
+    let growthAccounts = []
+    fetch(`http://localhost:3000/accounts?account=` + queryString)
+      .then(x => x.json())
+      .then(json => {
+        // Some mutation, but ceebs
+        growthAccounts = json.accounts
+        // Map everything to a promise
+        // Then execute everything concurrently
+        const promises = json.accounts.map((x) => {
+          return fetch(`http://localhost:3000/growth/` + x + commodityArg)
+            .then(x => x.json())
+        })
+
+        return Promise.all(promises)
+      })
+      .then(growthData => {
+        /*
+          We get
+          [
+            growth: {
+              2018/06: value
+              2018/07: value
+            },
+          ]
+        */
+        this.setState({
+          growthData,
+          growthAccounts,
+          fetchGrowthError: undefined
+        })
+      })
+      .catch(e => {
+        this.setState({
+          growthData: [],
+          growthAccounts: [],
+          fetchGrowthError: e
+        })
+      })
   }
 
   updateQueryString = (e) => {
@@ -299,7 +356,7 @@ class App extends Component {
   getInnerContent = () => {
     const str = this.state.isTyping ? 'Loading...' : 'Enter an account in the searchbar to get started'
 
-    if (this.state.queryString.length === 0) {
+    if (this.state.queryString.length === 0 || this.state.isTyping) {
       return (
         <Row center='xs'>
           <Col>
@@ -317,6 +374,13 @@ class App extends Component {
         return (
           <Row>
             <BarChart {...this.state} />
+          </Row>
+        )
+
+      case GROWTH:
+        return (
+          <Row>
+            <StackedArea {...this.state} />
           </Row>
         )
 
