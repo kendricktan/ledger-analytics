@@ -18,7 +18,7 @@
     "util": "^0.11.0"
   },
   "scripts": {
-    "express": "nodemon -x \"./ledger-analytics.js -f /home/kendrick/Finance/finance-ledger/main.journal\"",
+    "express": "nodemon -x \"./ledger-analytics.js -f example.ledger\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

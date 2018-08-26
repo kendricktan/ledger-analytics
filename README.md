@@ -5,9 +5,12 @@ Built on Node v9.11.1.
 
 Make sure that `ledger-cli` is installed (binary is `ledger`)
 
-# Dev
+# Development
+
+The project currently use [echarts](http://echarts.baidu.com/) for 
+
 ```bash
-npm run build # For frontend
+npm run build   # For frontend
 npm run express # For backend
 ```
 

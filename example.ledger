@@ -1,0 +1,197 @@
+2015/01/01 Linode
+  ;Personal production server and development server
+  Expenses:Services and Equipment         $80.00
+  Assets:Bank1
+
+2015/01/02 Lanlord Inc.
+  ;Nice apartment in city center
+  Expenses:Rent                         $1100.00
+  Assets:Bank1
+
+2015/01/02 Income
+  Assets:Bank1                          $2500.00
+  Income:Job
+
+2015/01/02 StarBucks
+  ;<3 Coffee
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/01/03 InterTelco
+  ;Home internet & mobile
+  Expenses:Services and Equipment        $120.00
+  Assets:Bank1
+
+2015/01/04 The Lobster
+  Expenses:Dining Out                     $44.00
+  Assets:Bank1
+
+2015/01/05 Wallmart
+  Expenses:Groceries                     $320.32
+  Assets:Bank1
+
+2015/01/07 StarBucks
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/01/12 Amazon.com
+  Expenses:Books                          $73.20
+  Expenses:Gadgets                       $249.00
+  Assets:Bank1
+
+2015/01/13 StarBucks
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/01/14 Netflix
+  Expenses:Subscriptions                   $7.99
+  Assets:Bank1
+
+2015/01/15 Mario's Trattoria
+  Expenses:Dining Out                     $23.00
+  Assets:Bank1
+
+2015/01/17 Cash
+  Expenses:Cash                          $100.00
+  Assets:Bank1
+
+2015/01/18 DevelopmentCasts
+  Expenses:Subscriptions                   $9.00
+  Assets:Bank1
+
+2015/01/18 The Bar
+  Expenses:Drinks                         $39.00
+  Assets:Bank1
+
+2015/01/19 StarBucks
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/01/20 Tablet Magazine
+  Expenses:Subscriptions                  $14.00
+  Assets:Bank1
+
+2015/01/21 Google Play Store
+  Expenses:Apps & Games                    $2.00
+  Assets:Bank1
+
+2015/01/22 CityTransport
+  ; monthly card
+  Expenses:Transport                      $65.00
+  Assets:Bank1
+
+2015/01/27 Hard Rock Cafe
+  Expenses:Dining Out                     $45.00
+  Assets:Bank1
+
+2015/01/28 Gifts and Co.
+  ; Sandra's birthday
+  Expenses:Gifts                          $30.00
+  Assets:Bank1
+
+2015/01/29 Food
+  Expenses:Dining Out                     $55.00
+  Assets:Bank1
+
+2015/01/30 Income
+  Assets:Bank1                            $1000.00
+  Income:Job
+
+2015/01/31 Bubble Tea
+  Expenses:Dining Out                     $15.00
+  Assets:Bank1
+
+2015/02/01 Linode
+  ;Personal production server and development server
+  Expenses:Services and Equipment         $80.00
+  Assets:Bank1
+
+2015/02/02 Lanlord Inc.
+  ;Nice apartment in city center
+  Expenses:Rent                         $1100.00
+  Assets:Bank1
+
+2015/02/02 StarBucks
+  ;<3 Coffee
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/02/03 InterTelco
+  ;Home internet & mobile
+  Expenses:Services and Equipment        $120.00
+  Assets:Bank1
+
+2015/02/04 The Lobster
+  Expenses:Dining Out                     $44.00
+  Assets:Bank1
+
+2015/02/05 Wallmart
+  Expenses:Groceries                     $320.32
+  Assets:Bank1
+
+2015/02/07 StarBucks
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/02/12 Amazon.com
+  Expenses:Books                          $73.20
+  Expenses:Gadgets                       $749.00
+  Assets:Bank1
+
+2015/02/13 StarBucks
+  Expenses:Coffee                          $3.65
+  Assets:Bank1
+
+2015/02/14 Netflix
+  Expenses:Subscriptions                   $7.99
+  Assets:Bank1
+
+2015/02/15 Mario's Trattoria
+  Expenses:Dining Out                     $13.00
+  Assets:Bank1
+
+2015/02/17 Cash
+  Expenses:Cash                          $120.00
+  Assets:Bank1
+
+2015/02/18 DevelopmentCasts
+  Expenses:Subscriptions                   $5.00
+  Assets:Bank1
+
+2015/02/18 The Bar
+  Expenses:Drinks                         $39.00
+  Assets:Bank1
+
+2015/02/19 StarBucks
+  Expenses:Coffee                          $5.65
+  Assets:Bank1
+
+2015/02/20 Tablet Magazine
+  Expenses:Subscriptions                  $14.00
+  Assets:Bank1
+
+2015/02/21 Google Play Store
+  Expenses:Apps & Games                    $2.00
+  Assets:Bank1
+
+2015/02/22 CityTransport
+  ; monthly card
+  Expenses:Transport                      $65.00
+  Assets:Bank1
+
+2015/02/27 Hard Rock Cafe
+  Expenses:Dining Out                     $25.00
+  Assets:Bank1
+
+2015/02/28 Gifts and Co.
+  ; Sandra's birthday
+  Expenses:Gifts                          $132.00
+  Assets:Bank1
+
+2015/02/28 Bonus Pay
+  Assets:Bank1                            $5500.00
+  Income:Bonus  
+  
+2015/02/28 Investments
+  Assets:Stocks                           1 SNP @ $ 2874.69
+  Assets:Bank1
