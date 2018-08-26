@@ -2,7 +2,7 @@
 
 Analytics for ledger-cli. Built on Node v9.11.1.
 
-__Make sure that `ledger-cli` is installed in yout $PATH (`ledger --help` in a terminal should open up the man page)__
+__Make sure that `ledger-cli` is installed in your $PATH__ (`ledger --help` in a terminal should open up the man page)
 
 # Installation and Usage
 Make sure [npm](https://docs.npmjs.com/cli/install) is installed
@@ -13,9 +13,9 @@ ledger-analytics -f <your journal file>
 ```
 
 # Preview
-![](https://i.imgur.com/tQEuEdf.mp4)
+![](https://thumbs.gfycat.com/PaleHeartfeltLice-size_restricted.gif)
 
-![](https://i.imgur.com/mbNHN79.gif)
+![](https://thumbs.gfycat.com/InbornRaggedCarpenterant-size_restricted.gif)
 
 # Development
 
