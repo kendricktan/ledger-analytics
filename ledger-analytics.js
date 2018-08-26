@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const pkg = require(path.join(__dirname, 'package.json'))
@@ -18,6 +19,12 @@ program
 if (program.file === undefined) {
   console.log('Usage example:')
   console.log('ledger-analytics -f <ledger file location>')
+  process.exit(-1)
+}
+
+// Check if file exists
+if (!fs.existsSync(program.file)) {
+  console.log('File supplied does not exist!')
   process.exit(-1)
 }
 
