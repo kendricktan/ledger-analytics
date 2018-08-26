@@ -202,7 +202,7 @@ class App extends Component {
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
-          return fetch(`http://localhost:3000/timeline/` + x + commodityArg)
+          return fetch(`http://localhost:3000/timeline/` + x.split(' ').join('\\ ') + commodityArg)
             .then(x => x.json())
         })
 
@@ -255,7 +255,7 @@ class App extends Component {
     // Fetches bar chart data
     const barAccounts = queryString.split(',')
     Promise.all(
-      barAccounts.map(x => fetch(`http://localhost:3000/timeline/` + x + commodityArg + `?type=month`).then(x => x.json()))
+      barAccounts.map(x => fetch(`http://localhost:3000/timeline/` + x.split(' ').join('\\ ') + commodityArg + `?type=month`).then(x => x.json()))
     ).then(values => {
       /*
       Get:
@@ -299,7 +299,7 @@ class App extends Component {
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
-          return fetch(`http://localhost:3000/growth/` + x + commodityArg)
+          return fetch(`http://localhost:3000/growth/` + x.split(' ').join('\\ ') + commodityArg)
             .then(x => x.json())
         })
 

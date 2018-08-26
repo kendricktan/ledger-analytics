@@ -11,7 +11,7 @@ module.exports.getCommodities = async (file) => {
 module.exports.getTimelineData = async (file, account, commodity = undefined, byMonth = false) => {
   const commodityArg = (commodity !== undefined) ? ` -X ` + commodity : ``
   const byLengthArgs = byMonth ? '-M' : '-D'
-  const { stdout } = await exec(`ledger -f ` + file + commodityArg + ` -j reg "` + account + `" ` + byLengthArgs + ` --collapse --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))\n"`)
+  const { stdout } = await exec(`ledger -f ` + file + commodityArg + ` -j reg ` + account + ` ` + byLengthArgs + ` --collapse --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))\n"`)
   // Convert datetime format from:
   /*
   2018-08-17 -63.26
@@ -54,7 +54,7 @@ module.exports.getAccounts = async (file, account) => {
 module.exports.getGrowth = async (file, account, commodity = undefined) => {
   const commodityArg = (commodity !== undefined) ? ` -X ` + commodity : ``
 
-  const { stdout } = await exec(`ledger -f ` + file + ` ` + commodityArg + ` -J reg "` + account + `" -M --collapse`)
+  const { stdout } = await exec(`ledger -f ` + file + ` ` + commodityArg + ` -J reg ` + account + ` -M --collapse`)
   const growth = stdout
     .split('\n')
     .filter(x => x.length > 0)

@@ -40,7 +40,12 @@
   "standard": {
     "parser": "babel-eslint"
   },
-  "keywords": ["ledger-cli", "ledger", "visualization", "analytics"],
+  "keywords": [
+    "ledger-cli",
+    "ledger",
+    "visualization",
+    "analytics"
+  ],
   "author": "Kendrick Tan",
   "license": "MIT",
   "bugs": {

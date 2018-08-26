@@ -28,7 +28,7 @@ class OverviewComments extends Component {
       )
     }
 
-    if (scatterAccounts.length === 0 || scatterAccounts.length === 0) {
+    if (scatterAccounts.length === 0 || scatterAccounts.length === 0 || timelineDates.length === 0) {
       return (
         <div style={{textAlign: 'center', width: '100%'}}>
           Insufficient data to construct comments
