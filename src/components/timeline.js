@@ -23,7 +23,7 @@ class Timeline extends Component {
       },
       title: {
         left: 'center',
-        text: 'Daily Credit/Debit From Account(s) ' + queryString + '*'
+        text: 'Daily Transactions From Account(s) ' + queryString + '*'
       },
       toolbox: {
         feature: {

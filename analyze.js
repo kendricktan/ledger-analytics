@@ -8,9 +8,10 @@ module.exports.getCommodities = async (file) => {
 }
 
 // Commodity can be empty
-module.exports.getTimelineData = async (file, account, commodity = undefined) => {
+module.exports.getTimelineData = async (file, account, commodity = undefined, byMonth = false) => {
   const commodityArg = (commodity !== undefined) ? ` -X ` + commodity : ``
-  const { stdout } = await exec(`ledger -f ` + file + commodityArg + ` -j reg ` + account + ` -D --collapse --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))\n"`)
+  const byLengthArgs = byMonth ? '-M' : '-D'
+  const { stdout } = await exec(`ledger -f ` + file + commodityArg + ` -j reg ` + account + ` ` + byLengthArgs + ` --collapse --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))\n"`)
   // Convert datetime format from:
   /*
   2018-08-17 -63.26

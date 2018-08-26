@@ -53,7 +53,8 @@ app.get('/accounts', async (req, res, next) => {
 app.get('/timeline/:account/:commodity?', async (req, res, next) => {
   try {
     const { commodity, account } = req.params
-    const { data, date } = await analyze.getTimelineData(program.file, account, commodity)
+    const byMonth = (req.query.type || '').toLowerCase() === 'month'
+    const { data, date } = await analyze.getTimelineData(program.file, account, commodity, byMonth)
     res.json({data, date})
   } catch (e) {
     next(e)

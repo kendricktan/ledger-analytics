@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col } from 'react-flexbox-grid'
+import { frenchPallate } from './colors'
 import ReactEcharts from 'echarts-for-react'
 
 class PieChart extends Component {
@@ -58,7 +58,7 @@ class PieChart extends Component {
       seriesData: scatterAccounts.map((x, idx) => {
         const sumOfDataWithinRange = scatterData[idx].filter((arr) => {
           return arr[2] >= startDate && arr[2] <= endDate
-        }).reduce((acc, obj) => acc + obj[1], 0)
+        }).reduce((acc, obj) => acc + Math.abs(obj[1]), 0)
 
         return {name: x, value: sumOfDataWithinRange.toFixed(2)}
       })
@@ -67,9 +67,10 @@ class PieChart extends Component {
     const option = {
       title: {
         text: queryString,
-        subtext: 'Credit/Debit Breakdown',
+        subtext: 'Transaction Breakdown',
         x: 'center'
       },
+      color: frenchPallate,
       tooltip: {
         trigger: 'item',
         formatter: '{b}<br/>' + baseCommodity + ': ' + '{c} ({d}%)'

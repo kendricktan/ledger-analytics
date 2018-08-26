@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import fetch from 'node-fetch'
 
+import BarChart from './components/bar-chart'
 import ScatterChart from './components/scatter-chart'
 import PieChart from './components/pie-chart'
 import Timeline from './components/timeline'
@@ -122,9 +123,13 @@ class App extends Component {
     // Scatter Chart
     scatterAccounts: [],
     scatterData: [],
-    fetchScatterError: undefined
+    fetchScatterError: undefined,
 
     // Pie Chart reuses data from Scatter Chart
+
+    // Bar Chart
+    barData: [],
+    fetchBarError: undefined
   };
 
   componentDidMount = () => {
@@ -170,7 +175,7 @@ class App extends Component {
       })
 
     // Fetches Scatter Chart Data
-    // And piechart data
+    // And Pie Chart data
     let accounts = []
     fetch(`http://localhost:3000/accounts?account=` + queryString)
       .then(x => x.json())
@@ -216,8 +221,6 @@ class App extends Component {
           return days.map((x, idx) => [x, data[idx], dates[idx], account])
         })
 
-        // PieChart
-
         this.setState({
           scatterAccounts: accounts,
           scatterData,
@@ -229,6 +232,43 @@ class App extends Component {
           scatterAccounts: [],
           scatterData: [],
           fetchScatterError: e
+        })
+      })
+
+    // Fetches bar chart data
+    const barAccounts = queryString.split(',')
+    Promise.all(
+      barAccounts.map(x => fetch(`http://localhost:3000/timeline/` + x + commodityArg + `?type=month`).then(x => x.json()))
+    ).then(values => {
+      /*
+      Get:
+
+      values : [
+        { data: [amount1, amount2...], date: [2018/07/01, 2018/08/2 ...] }
+      ]
+
+      Want: [
+        { data: [amount1, amount2...], date: [2018/07, 2018/08 ...], account: accName }
+      ]
+      */
+      const barData = values.map((x, idx) => {
+        // Remove day from data
+        return {
+          date: x.date.map(y => y.split('/').splice(0, 2).join('/')),
+          data: x.data,
+          account: barAccounts[idx]
+        }
+      })
+
+      this.setState({
+        barData,
+        fetchBarError: undefined
+      })
+    })
+      .catch((e) => {
+        this.setState({
+          barData: [],
+          fetchBarError: e
         })
       })
   }
@@ -272,6 +312,14 @@ class App extends Component {
     switch (this.state.queryType) {
       case OVERVIEW:
         return <Overview {...this.state} updateTimelineZoom={this.updateTimelineZoom} />
+
+      case COMPARISON:
+        return (
+          <Row>
+            <BarChart {...this.state} />
+          </Row>
+        )
+
       default:
         return (
           <Row center='xs'>
