@@ -1,17 +1,38 @@
 # Ledger Analytics
 
-Analytics/Visualization tool for ledger-cli. Built on Node v9.11.1.
-
-__Make sure that `ledger-cli` is installed in your $PATH__ (`ledger --help` in a terminal should open up its `man` page)
+Analytics/Visualization tool for ledger-cli.
 
 # Installation and Usage
-Make sure [npm](https://docs.npmjs.com/cli/install) is installed
+Make sure [npm](https://docs.npmjs.com/cli/install) and [ledger-cli](https://www.ledger-cli.org/) is installed (`npm --help` and `ledger --help` should display some information if its installed).
+
 ```
 npm install -g ledger-analytics
 
 ledger-analytics -f <your journal file>
+```
 
-# Navigate to 127.0.0.1:3000 in your browser
+Navigate to http://127.0.0.1:3000 in your browser
+
+# Query Examples
+Don't insert the `$` character
+
+### Overview
+```
+$ assets and not assets:super and not assets:stock
+$ expenses:food
+$ expenses and not expenses:travel
+```
+
+### Comparison
+```
+$ income,expenses,assets:stocks
+```
+
+### Growth
+```
+$ income
+$ assets
+$ expenses
 ```
 
 # Preview
@@ -24,6 +45,10 @@ ledger-analytics -f <your journal file>
 </center>
 
 # Releases
+
+### 0.1.1a (2018/08/26)
+- Bug fixes
+  - Fixed app crash on `asset and not asset:pension` 
 
 ### 0.1.0a (2018/08/26)
 - First release of ledger-analytics
