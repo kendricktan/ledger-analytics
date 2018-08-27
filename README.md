@@ -46,6 +46,11 @@ $ expenses
 
 # Releases
 
+### 0.1.2a (2018/08/27)
+- Bug fixes
+  - Fixed `index.html` with weird prefix appending
+  - Fixed timeline zoom sync with piechart and overview comments data
+
 ### 0.1.1a (2018/08/26)
 - Bug fixes
   - Fixed app crash on `asset and not asset:pension` 
