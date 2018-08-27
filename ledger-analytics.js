@@ -57,11 +57,12 @@ app.get('/accounts', async (req, res, next) => {
 })
 
 // Get timeline data
-app.get('/timeline/:account/:commodity?', async (req, res, next) => {
+app.get('/timeline/:commodity?', async (req, res, next) => {
   try {
-    const { commodity, account } = req.params
+    const { commodity } = req.params
+    const query = req.query.query
     const byMonth = (req.query.type || '').toLowerCase() === 'month'
-    const { data, date } = await analyze.getTimelineData(program.file, account, commodity, byMonth)
+    const { data, date } = await analyze.getTimelineData(program.file, query, commodity, byMonth)
     res.json({data, date})
   } catch (e) {
     next(e)
@@ -69,10 +70,11 @@ app.get('/timeline/:account/:commodity?', async (req, res, next) => {
 })
 
 // Get growth data
-app.get('/growth/:account/:commodity?', async (req, res, next) => {
+app.get('/growth/:commodity?', async (req, res, next) => {
   try {
-    const { account, commodity } = req.params
-    const growth = await analyze.getGrowth(program.file, account, commodity)
+    const { commodity } = req.params
+    const query = req.query.query
+    const growth = await analyze.getGrowth(program.file, query, commodity)
     res.json({growth})
   } catch (e) {
     next(e)

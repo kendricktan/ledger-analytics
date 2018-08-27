@@ -9,14 +9,14 @@ class OverviewComments extends Component {
         nextProps.scatterData !== this.props.scatterData &&
         nextProps.scatterAccounts !== this.props.scatterAccounts
       ) ||
-      nextProps.timelineZoomEnd !== this.props.timelineZoomEnd ||
-      nextProps.timelineZoomStart !== this.props.timelineZoomStart
+      nextProps.timelineEndDate !== this.props.timelineEndDate ||
+      nextProps.timelineStartDate !== this.props.timelineStartDate
     )
   }
 
   render () {
     // Reusing data from scatter plots (just xforming them more)
-    const { timelineDates, timelineZoomStart, timelineZoomEnd, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
+    const { timelineDates, timelineStartDate, timelineEndDate, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
 
     // If scatter fetch has an error, its likely
     // because of multiple commodities
@@ -36,23 +36,10 @@ class OverviewComments extends Component {
       )
     }
 
-    // Used to calculate relevant information within selected date range in timeline
-    const dateLength = timelineDates.length
-
-    // Make scatter plot representative of timeline zoom
-    const startIndex = parseInt(timelineZoomStart * dateLength / 100, 10) - 1
-    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
-
-    const endIndex = parseInt(timelineZoomEnd * dateLength / 100, 10) - 1
-    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
-
-    const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
-    const endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
-
     // Get most frequently access account
     const mostFrequent = scatterData.reduce((acc, cur, idx) => {
       const curFixed = scatterData[idx].filter((arr) => {
-        return arr[2] >= startDate && arr[2] <= endDate
+        return arr[2] >= timelineStartDate && arr[2] <= timelineEndDate
       })
 
       // More frequently accessed account
@@ -71,9 +58,9 @@ class OverviewComments extends Component {
     // Get most frequently access account
     const largestTransaction = scatterData.reduce((acc, cur, idx) => {
       const curFixed = scatterData[idx].filter((arr) => {
-        return arr[2] >= startDate && arr[2] <= endDate
+        return arr[2] >= timelineStartDate && arr[2] <= timelineEndDate
       })
-      
+
       // Get largest within array
       const curLargest = curFixed.reduce((acc2, cur2, idx2) => {
         if (cur2[1] > acc2[1]) {

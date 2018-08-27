@@ -128,6 +128,8 @@ class App extends Component {
     // Timeline
     timelineZoomStart: 0,
     timelineZoomEnd: 100,
+    timelineStartDate: undefined,
+    timelineEndDate: undefined,
     timelineData: [],
     timelineDates: [],
     fetchTimelineError: undefined,
@@ -178,17 +180,19 @@ class App extends Component {
 
     // Fetches timeline data
     // Commodity can be defined if user only has one commodity
-    fetch(`http://localhost:3000/timeline/` + queryString + commodityArg)
+    fetch(`http://localhost:3000/timeline` + commodityArg + `?query=` + encodeURI(queryString))
       .then(x => x.json())
       .then(json => {
         this.setState({
           timelineData: json.data,
           timelineDates: json.date,
+          timelineStartDate: json.date[0],
+          timelineEndDate: json.date[json.date.length - 1],
           fetchTimelineError: undefined
         })
       })
       .catch(e => {
-        this.setState({timelineDates: [], timelineData: [], fetchTimelineError: e})
+        this.setState({timelineDates: [], timelineData: [], timelineStartDate: undefined, timelineEndDate: undefined, fetchTimelineError: e})
       })
 
     // Fetches Scatter Chart Data
@@ -202,7 +206,7 @@ class App extends Component {
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
-          return fetch(`http://localhost:3000/timeline/` + x.split(' ').join('\\ ') + commodityArg)
+          return fetch(`http://localhost:3000/timeline` + commodityArg + `?query=` + encodeURI(x))
             .then(x => x.json())
         })
 
@@ -255,7 +259,7 @@ class App extends Component {
     // Fetches bar chart data
     const barAccounts = queryString.split(',')
     Promise.all(
-      barAccounts.map(x => fetch(`http://localhost:3000/timeline/` + x.split(' ').join('\\ ') + commodityArg + `?type=month`).then(x => x.json()))
+      barAccounts.map(x => fetch(`http://localhost:3000/timeline` + commodityArg + `?type=month&query=` + encodeURI(x)).then(x => x.json()))
     ).then(values => {
       /*
       Get:
@@ -299,7 +303,7 @@ class App extends Component {
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
-          return fetch(`http://localhost:3000/growth/` + x.split(' ').join('\\ ') + commodityArg)
+          return fetch(`http://localhost:3000/growth` + commodityArg + '?query=' + x)
             .then(x => x.json())
         })
 
@@ -347,9 +351,35 @@ class App extends Component {
   }
 
   updateTimelineZoom = (obj) => {
+    // Used to calculate relevant information within selected date range in timeline
+    const { timelineDates } = this.state
+    const timelineZoomStart = obj.start || this.state.timelineZoomStart
+    const timelineZoomEnd = obj.end || this.state.timelineZoomEnd
+
+    // If the number of dates the timeline has is 0
+    // Then data is probably not properly loaded
+    if (timelineDates.length === 0) {
+      return
+    }
+
+    const dateLength = timelineDates.length
+
+    // Make scatter plot representative of timeline zoom
+    const startIndex = Math.floor(timelineZoomStart * dateLength / 100)
+    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
+
+    const endIndex = Math.ceil(timelineZoomEnd * dateLength / 100, 10) - 1
+    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
+
+    // Where did user zoomed into timeline (it's start and end date)
+    const timelineStartDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
+    const timelineEndDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
+
     this.setState({
-      timelineZoomStart: obj.start,
-      timelineZoomEnd: obj.end
+      timelineZoomStart,
+      timelineZoomEnd,
+      timelineStartDate,
+      timelineEndDate
     })
   }
 

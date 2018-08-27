@@ -115,7 +115,9 @@ class Timeline extends Component {
           notMerge
           lazyUpdate
           onEvents={{
-            dataZoom: (e) => this.props.updateTimelineZoom(e)
+            dataZoom: (e) => this.props.updateTimelineZoom(e),
+            // Used to trigger refresh of other components
+            finished: (e) => this.props.updateTimelineZoom({start: undefined, end: undefined})
           }}
         />
       </div>

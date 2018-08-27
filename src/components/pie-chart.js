@@ -10,14 +10,14 @@ class PieChart extends Component {
         nextProps.scatterData !== this.props.scatterData &&
         nextProps.scatterAccounts !== this.props.scatterAccounts
       ) ||
-      nextProps.timelineZoomEnd !== this.props.timelineZoomEnd ||
-      nextProps.timelineZoomStart !== this.props.timelineZoomStart
+      nextProps.timelineEndDate !== this.props.timelineEndDate ||
+      nextProps.timelineStartDate !== this.props.timelineStartDate
     )
   }
 
   render () {
     // Reusing data from scatter plots (just xforming them more)
-    const { queryString, timelineDates, timelineZoomStart, timelineZoomEnd, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
+    const { queryString, timelineDates, timelineStartDate, timelineEndDate, baseCommodity, scatterData, scatterAccounts, fetchScatterError } = this.props
 
     // If scatter fetch has an error, its likely
     // because of multiple commodities
@@ -37,18 +37,6 @@ class PieChart extends Component {
       )
     }
 
-    const dateLength = timelineDates.length
-
-    // Make scatter plot representative of timeline zoom
-    const startIndex = parseInt(timelineZoomStart * dateLength / 100, 10) - 1
-    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
-
-    const endIndex = parseInt(timelineZoomEnd * dateLength / 100, 10) - 1
-    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
-
-    const startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
-    const endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
-
     const data = {
       legendData: scatterAccounts,
       selected: scatterAccounts.reduce((pv, cv) => {
@@ -57,7 +45,7 @@ class PieChart extends Component {
       }, {}),
       seriesData: scatterAccounts.map((x, idx) => {
         const sumOfDataWithinRange = scatterData[idx].filter((arr) => {
-          return arr[2] >= startDate && arr[2] <= endDate
+          return arr[2] >= timelineStartDate && arr[2] <= timelineEndDate
         }).reduce((acc, obj) => acc + Math.abs(obj[1]), 0)
 
         return {name: x, value: sumOfDataWithinRange.toFixed(2)}
