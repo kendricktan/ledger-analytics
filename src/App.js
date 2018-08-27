@@ -365,7 +365,7 @@ class App extends Component {
     const dateLength = timelineDates.length
 
     // Make scatter plot representative of timeline zoom
-    const startIndex = Math.floor(timelineZoomStart * dateLength / 100)
+    const startIndex = Math.floor(timelineZoomStart * dateLength / 100) - 1
     const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
 
     const endIndex = Math.ceil(timelineZoomEnd * dateLength / 100, 10) - 1

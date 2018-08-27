@@ -46,6 +46,9 @@ $ expenses
 
 # Releases
 
+### 0.1.3a (2018/08/27)
+- Added MIT LICENSE
+
 ### 0.1.2a (2018/08/27)
 - Bug fixes
   - Fixed `index.html` with weird prefix appending
