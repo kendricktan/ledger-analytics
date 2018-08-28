@@ -16,7 +16,7 @@ Navigate to http://127.0.0.1:3000 in your browser
 # Query Examples
 Don't insert the `$` character.
 
-You can query multiple accounts by separating each account with a space, or exclude certain accounts by adding `and not <account>` in front of them.
+You can query multiple accounts by separating each account with a space (e.g. `assets liabilities`), or exclude certain accounts by adding `and not <account>` in front of them (e.g. `expenses and not expenses:food`).
 
 ### Overview
 ```
@@ -34,7 +34,7 @@ $ expenses:food,expenses:fun
 ### Growth
 ```
 $ income
-$ assets
+$ assets:stocks assets:crypto
 $ expenses
 ```
 

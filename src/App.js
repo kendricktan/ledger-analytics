@@ -2,27 +2,25 @@ import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-flexbox-grid'
 import fetch from 'node-fetch'
 
-import StackedArea from './components/stacked-area'
-import BarChart from './components/bar-chart'
-import ScatterChart from './components/scatter-chart'
-import PieChart from './components/pie-chart'
-import Timeline from './components/timeline'
-import OverviewComments from './components/overview-comments'
+import Overview from './components/overview'
+import Growth from './components/growth'
+import Comparison from './components/comparison'
 
 import './App.css'
 
+// How long a pause before we consider user has stopped typing
 const TYPING_INTERVAL = 1000
 
 const OVERVIEW = '0'
 const COMPARISON = '1'
 const GROWTH = '2'
 
-class QueryBox extends Component {
+class QueryBar extends Component {
   // Different hints for different types
   getPlaceholderText = () => {
     switch (this.props.queryType) {
       case OVERVIEW:
-        return 'assets:bank1 and not assets:pension'
+        return 'assets and not assets:pension'
 
       case COMPARISON:
         return 'income,expenses,...'
@@ -82,43 +80,9 @@ class QueryBox extends Component {
   }
 }
 
-class Overview extends Component {
-  render () {
-    // If comma in queryString then ask them to remove it
-    if (this.props.queryString.indexOf(',') !== -1) {
-      return (
-        <Row>
-          <div style={{textAlign: 'center', width: '100%'}}>
-            Please remove the comma. The comma is only used in `Comparison` mode.
-          </div>
-        </Row>
-      )
-    }
-
-    return (
-      <div>
-        <Row>
-          <Timeline {...this.props} updateTimelineZoom={this.props.updateTimelineZoom} />
-        </Row>
-        <Row>
-          <ScatterChart {...this.props} />
-        </Row>
-        <Row>
-          <Col xs={7}>
-            <PieChart {...this.props} />
-          </Col>
-          <Col xs={5}>
-            <OverviewComments {...this.props} />
-          </Col>
-        </Row>
-      </div>
-    )
-  }
-}
-
 class App extends Component {
   state = {
-    // QueryBox
+    // QueryBar
     queryString: '',
     queryType: OVERVIEW,
     commodities: [],
@@ -146,9 +110,9 @@ class App extends Component {
     fetchBarError: undefined,
 
     // Growth Chart (Stacked Area)
-    growthAccounts: [],
-    growthData: [],
-    fetchGrowthError: undefined
+    stackedAreaAccounts: [],
+    stackedAreaData: [],
+    fetchStackedAreaError: undefined
   };
 
   componentDidMount = () => {
@@ -197,12 +161,12 @@ class App extends Component {
 
     // Fetches Scatter Chart Data
     // And Pie Chart data
-    let accounts = []
+    let timelineAccounts = []
     fetch(`http://localhost:3000/accounts?account=` + queryString)
       .then(x => x.json())
       .then(json => {
         // Some mutation, but ceebs
-        accounts = json.accounts
+        timelineAccounts = json.accounts
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
@@ -237,13 +201,13 @@ class App extends Component {
           })
           const days = dates.map(x => x.getDay())
           const data = timelineData.data
-          const account = accounts[idx]
+          const account = timelineAccounts[idx]
 
           return days.map((x, idx) => [x, data[idx], dates[idx], account])
         })
 
         this.setState({
-          scatterAccounts: accounts,
+          scatterAccounts: timelineAccounts,
           scatterData,
           fetchScatterError: undefined
         })
@@ -294,12 +258,12 @@ class App extends Component {
       })
 
     // Fetches growth chart data
-    let growthAccounts = []
+    let stackedAreaAccounts = []
     fetch(`http://localhost:3000/accounts?account=` + queryString)
       .then(x => x.json())
       .then(json => {
         // Some mutation, but ceebs
-        growthAccounts = json.accounts
+        stackedAreaAccounts = json.accounts
         // Map everything to a promise
         // Then execute everything concurrently
         const promises = json.accounts.map((x) => {
@@ -309,7 +273,7 @@ class App extends Component {
 
         return Promise.all(promises)
       })
-      .then(growthData => {
+      .then(stackedAreaData => {
         /*
           We get
           [
@@ -320,16 +284,16 @@ class App extends Component {
           ]
         */
         this.setState({
-          growthData,
-          growthAccounts,
-          fetchGrowthError: undefined
+          stackedAreaData,
+          stackedAreaAccounts,
+          fetchStackedAreaError: undefined
         })
       })
       .catch(e => {
         this.setState({
-          growthData: [],
-          growthAccounts: [],
-          fetchGrowthError: e
+          stackedAreaData: [],
+          stackedAreaAccounts: [],
+          fetchStackedAreaError: e
         })
       })
   }
@@ -396,23 +360,26 @@ class App extends Component {
       )
     }
 
+    // If comma in queryString then ask them to remove it
+    if (this.state.queryString.indexOf(',') !== -1 && this.state.queryType !== COMPARISON) {
+      return (
+        <Row>
+          <div style={{textAlign: 'center', width: '100%'}}>
+              Please remove the comma. The comma is only used in `Comparison` mode.
+          </div>
+        </Row>
+      )
+    }
+
     switch (this.state.queryType) {
       case OVERVIEW:
         return <Overview {...this.state} updateTimelineZoom={this.updateTimelineZoom} />
 
       case COMPARISON:
-        return (
-          <Row>
-            <BarChart {...this.state} />
-          </Row>
-        )
+        return <Comparison {...this.state} />
 
       case GROWTH:
-        return (
-          <Row>
-            <StackedArea {...this.state} />
-          </Row>
-        )
+        return <Growth {...this.state} />
 
       default:
         return (
@@ -429,7 +396,7 @@ class App extends Component {
     return (
       <Grid>
         <Row center='xs'>
-          <QueryBox
+          <QueryBar
             {...this.state}
             updateQueryString={this.updateQueryString}
             updateQueryType={this.updateQueryType}
