@@ -95,12 +95,30 @@ export default class StackedArea extends Component {
         text: 'Monthly Growth'
       },
       tooltip: {
+        position: (point, params, dom, rect, size) => {
+          return [point[0], '50%']
+        },
         trigger: 'axis',
         axisPointer: {
           type: 'cross',
           label: {
             backgroundColor: '#000'
           }
+        },
+        formatter: (params, ticket, callback) => {
+          const total = params.reduce((acc, current) => {
+            return acc + parseFloat(current.value)
+          }, 0)
+
+          const output = params.reduce((acc, current, idx) => {
+            if (idx === 0) {
+              acc = acc + current.axisValue + ': ' + baseCommodity + total.toFixed(2) + '<br />'
+            }
+            acc = acc + current.marker + ' ' + current.seriesName + ': ' + baseCommodity + current.data + '<br />'
+            return acc
+          }, '')
+
+          return output
         }
       },
       legend: {

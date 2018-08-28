@@ -49,6 +49,13 @@ $ expenses
 
 # Releases
 
+### 0.1.4a (2018/08/29)
+- Growth Chart
+  - Fixed position of tooltip hover
+  - Added total amont to tooltip
+- BugFixes:
+  - Fixed `PUBLIC_URL` append on NPM build
+
 ### 0.1.3a (2018/08/27)
 - Added MIT LICENSE
 
