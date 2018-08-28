@@ -14,18 +14,21 @@ ledger-analytics -f <your journal file>
 Navigate to http://127.0.0.1:3000 in your browser
 
 # Query Examples
-Don't insert the `$` character
+Don't insert the `$` character.
+
+You can query multiple accounts by separating each account with a space, or exclude certain accounts by adding `and not <account>` in front of them.
 
 ### Overview
 ```
+$ expenses:food expenses:flights
 $ assets and not assets:super and not assets:stock
-$ expenses:food
 $ expenses and not expenses:travel
 ```
 
 ### Comparison
 ```
 $ income,expenses,assets:stocks
+$ expenses:food,expenses:fun
 ```
 
 ### Growth
