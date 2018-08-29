@@ -103,7 +103,7 @@ export default class StackedArea extends Component {
 
           const output = params.reduce((acc, current, idx) => {
             if (idx === 0) {
-              acc = acc + current.axisValue + ': ' + baseCommodity + total.toFixed(2) + '<br />'
+              acc = acc + current.axisValue + ': ' + baseCommodity + ' ' + total.toFixed(2) + '<br />'
             }
             acc = acc + current.marker + ' ' + current.seriesName + ': ' + baseCommodity + current.data + '<br />'
             return acc

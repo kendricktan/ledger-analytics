@@ -1,4 +1,4 @@
-# Ledger Analytics
+# Ledger Analytics ![Build Status](https://api.travis-ci.org/kendricktan/ledger-analytics.png)
 
 Analytics/Visualization tool for ledger-cli.
 
