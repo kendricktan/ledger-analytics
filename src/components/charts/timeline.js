@@ -115,9 +115,42 @@ class Timeline extends Component {
           notMerge
           lazyUpdate
           onEvents={{
-            dataZoom: (e) => this.props.updateTimelineZoom(e),
-            // Used to trigger refresh of other components
-            finished: (e) => this.props.updateTimelineZoom({start: undefined, end: undefined})
+            dataZoom: (e, o) => {
+              try {
+                const dates = o._chartsViews[`0`][`_data`][`_idList`] || []
+                const indicies = o._chartsViews[`0`][`_data`][`_indices`] || []
+
+                const indiciesInRange = indicies.reduce((acc, c, idx) => {
+                  if (idx === 0 && c === 0) {
+                    acc.min = 0
+                    return acc
+                  }
+
+                  if (idx > 0 && c === 0) {
+                    return acc
+                  }
+
+                  if (c < acc.min) {
+                    acc.min = c
+                  }
+                  if (c > acc.max) {
+                    acc.max = c
+                  }
+                  return acc
+                }, {min: Number.MAX_SAFE_INTEGER, max: 0})
+
+                const startDateSplitted = dates[indiciesInRange.min].split('/')
+                const endDateSplitted = dates[indiciesInRange.max].split('/')
+
+                const startDate = new Date(startDateSplitted[0], startDateSplitted[1] - 1, startDateSplitted[2])
+                const endDate = new Date(endDateSplitted[0], endDateSplitted[1] - 1, endDateSplitted[2])
+
+                this.props.updateTimelineZoom({startDate, endDate})
+              } catch (e) {
+                console.log(e)
+                this.props.updateTimelineZoom({startDate: undefined, endDate: undefined})
+              }
+            }
           }}
         />
       </div>

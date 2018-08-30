@@ -1,14 +1,18 @@
-# Ledger Analytics
+# Ledger Analytics ![Build Status](https://api.travis-ci.org/kendricktan/ledger-analytics.png)
 
-Analytics/Visualization tool for ledger-cli.
+Analytics/Visualization tool for ledger-cli. Tested on Node v9.11.1.
 
 # Installation and Usage
 Make sure [npm](https://docs.npmjs.com/cli/install) and [ledger-cli](https://www.ledger-cli.org/) is installed (`npm --help` and `ledger --help` should display some information if its installed).
 
-```
+```bash
 npm install -g ledger-analytics
 
-ledger-analytics -f <your journal file>
+ledger-analytics -f <your journal file> [extra arguments for ledger]
+
+# Examples
+# ledger-analytics -f main.journal
+# ledger-analytics -f main.journal --input-date-format "%d.%m.%y"
 ```
 
 Navigate to http://127.0.0.1:3000 in your browser
@@ -28,14 +32,13 @@ $ expenses and not expenses:travel
 ### Comparison
 ```
 $ income,expenses,assets:stocks
-$ expenses:food,expenses:fun
+$ expenses and not expenses:travel,income
 ```
 
 ### Growth
 ```
-$ income
-$ assets:stocks assets:crypto
-$ expenses
+$ assets:stocks assets:bank1
+$ assets:stocks and not assets:crypto
 ```
 
 # Preview
@@ -48,6 +51,14 @@ $ expenses
 </center>
 
 # Releases
+
+### 0.1.5a (2018/08/30)
+- Added ability to pass extra arguments to ledger-cli
+- Timeline
+  - Fixed timeline view range to exact date
+  - Set date bug
+- Refactored `analyze.js` to `ledger-api.js`
+  - Made `ledger-api` object composable :)
 
 ### 0.1.4a (2018/08/29)
 - Growth Chart
