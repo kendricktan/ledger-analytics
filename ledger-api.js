@@ -145,9 +145,6 @@ class LedgerApi {
 
         return acc
       }, {})
-
-    console.log(growth)
-
     return { growth }
   };
 }
