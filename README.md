@@ -53,7 +53,10 @@ $ assets:stocks and not assets:crypto
 # Releases
 
 ### 0.1.5a (2018/08/30)
-- Added extra argument passing to ledger-cli
+- Added ability to pass extra arguments to ledger-cli
+- Timeline
+  - Fixed timeline view range to exact date
+  - Set date bug
 - Refactored `analyze.js` to `ledger-api.js`
   - Made `ledger-api` object composable :)
 
