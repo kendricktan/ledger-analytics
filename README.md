@@ -52,6 +52,12 @@ $ assets:stocks and not assets:crypto
 
 # Releases
 
+### 0.1.7a (2018/08/30)
+- Fixed growth bug #2
+  - Who knew `0 || 1` gives `1`?
+  - `undefined || 0` gives `0` too 
+  - Thanks JS
+
 ### 0.1.6a (2018/08/30)
 - Fixed growth chart bug
   - Asset is 0 if account is referenced recently (but was referenced some time ago)
