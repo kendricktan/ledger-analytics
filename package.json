@@ -1,6 +1,6 @@
 {
   "name": "ledger-analytics",
-  "version": "0.1.7a",
+  "version": "0.1.8a",
   "dependencies": {
     "commander": "^2.17.1",
     "cors": "^2.8.4",

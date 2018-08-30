@@ -52,6 +52,9 @@ $ assets:stocks and not assets:crypto
 
 # Releases
 
+### 0.1.8a (2018/08/30)
+- Updated frontend
+
 ### 0.1.7a (2018/08/30)
 - Fixed growth bug #2
   - Who knew `0 || 1` gives `1`?
