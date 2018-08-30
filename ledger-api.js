@@ -130,8 +130,7 @@ class LedgerApi {
       this._commodity +
       ` -J -M` +
       this._extraArgs +
-      ` --collapse` +
-      ` --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))"`.split('\n').join('')
+      ` --collapse`.split('\n').join('')
     )
 
     const growth = stdout

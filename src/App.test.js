@@ -64,7 +64,7 @@ it('Get timeline tests', async () => {
 
 it('Get growth tests', async () => {
   // Growth Data
-  const correctGrowthData = { growth: { '2015/01': 1093.89, '2015/02': 2573.89 } }
+  const correctGrowthData = { growth: { '2015/01': 1093.89, '2015/02': 3667.78 } }
   const growthData = await fetch(`http://localhost:3000/growth/$?query=assets`).then(x => x.json())
   assert.deepEqual(growthData, correctGrowthData)
 })
