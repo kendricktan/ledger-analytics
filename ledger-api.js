@@ -98,7 +98,8 @@ class LedgerApi {
       ` -j` +
       this._period +
       this._extraArgs +
-      ` --collapse`.split('\n').join('')
+      ` --collapse` +
+      ` --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))"`.split('\n').join('')
     )
 
     return stdout
@@ -129,7 +130,8 @@ class LedgerApi {
       this._commodity +
       ` -j -M` +
       this._extraArgs +
-      ` --collapse`.split('\n').join('')
+      ` --collapse` +
+      ` --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))"`.split('\n').join('')
     )
 
     const growth = stdout

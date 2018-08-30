@@ -48,8 +48,12 @@ class PieChart extends Component {
           return arr[2] >= timelineStartDate && arr[2] <= timelineEndDate
         }).reduce((acc, obj) => acc + Math.abs(obj[1]), 0)
 
+        if (sumOfDataWithinRange <= 0) {
+          return {}
+        }
+
         return {name: x, value: sumOfDataWithinRange.toFixed(2)}
-      })
+      }).filter(x => Object.keys(x).length > 0)
     }
 
     const option = {

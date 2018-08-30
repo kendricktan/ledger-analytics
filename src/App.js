@@ -90,8 +90,6 @@ class App extends Component {
     isTyping: false,
 
     // Timeline
-    timelineZoomStart: 0,
-    timelineZoomEnd: 100,
     timelineStartDate: undefined,
     timelineEndDate: undefined,
     timelineData: [],
@@ -147,11 +145,17 @@ class App extends Component {
     fetch(`http://localhost:3000/timeline` + commodityArg + `?query=` + encodeURI(queryString))
       .then(x => x.json())
       .then(json => {
+        const startDateSplitted = json.date[0].split('/')
+        const endDateSplitted = json.date[json.date.length - 1].split('/')
+
+        const startDate = new Date(startDateSplitted[0], startDateSplitted[1] - 1, startDateSplitted[2])
+        const endDate = new Date(endDateSplitted[0], endDateSplitted[1] - 1, endDateSplitted[2])
+
         this.setState({
           timelineData: json.data,
           timelineDates: json.date,
-          timelineStartDate: json.date[0],
-          timelineEndDate: json.date[json.date.length - 1],
+          timelineStartDate: startDate,
+          timelineEndDate: endDate,
           fetchTimelineError: undefined
         })
       })
@@ -314,36 +318,12 @@ class App extends Component {
     this.setState({isTyping: b})
   }
 
-  updateTimelineZoom = (obj) => {
-    // Used to calculate relevant information within selected date range in timeline
-    const { timelineDates } = this.state
-    const timelineZoomStart = obj.start || this.state.timelineZoomStart
-    const timelineZoomEnd = obj.end || this.state.timelineZoomEnd
-
-    // If the number of dates the timeline has is 0
-    // Then data is probably not properly loaded
-    if (timelineDates.length === 0) {
-      return
-    }
-
-    const dateLength = timelineDates.length
-
-    // Make scatter plot representative of timeline zoom
-    const startIndex = Math.floor(timelineZoomStart * dateLength / 100) - 1
-    const startDateParts = timelineDates[Math.max(0, startIndex)].split('/')
-
-    const endIndex = Math.ceil(timelineZoomEnd * dateLength / 100, 10) - 1
-    const endDateParts = timelineDates[Math.max(0, endIndex)].split('/')
-
-    // Where did user zoomed into timeline (it's start and end date)
-    const timelineStartDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
-    const timelineEndDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
+  updateTimelineZoom = ({startDate, endDate}) => {
+    const { timelineStartDate, timelineEndDate } = this.state
 
     this.setState({
-      timelineZoomStart,
-      timelineZoomEnd,
-      timelineStartDate,
-      timelineEndDate
+      timelineStartDate: startDate || timelineStartDate,
+      timelineEndDate: endDate || timelineEndDate
     })
   }
 
