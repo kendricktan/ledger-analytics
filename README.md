@@ -52,6 +52,10 @@ $ assets:stocks and not assets:crypto
 
 # Releases
 
+### 0.1.6a (2018/08/30)
+- Fixed growth chart bug
+  - Asset is 0 if account is referenced recently (but was referenced some time ago)
+
 ### 0.1.5a (2018/08/30)
 - Added ability to pass extra arguments to ledger-cli
 - Timeline
