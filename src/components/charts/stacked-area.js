@@ -74,8 +74,18 @@ export default class StackedArea extends Component {
         }
 
         const prevK = year + '/' + (prevMonth + '').padStart(2, '0')
-        
-        acc[k] = x.growth[k] || x.growth[prevK] || allDates[k]
+
+        // Goddamnit JavaScript can't use
+        // 0 || 1
+        // evals to 0
+        if (x.growth[k] !== undefined) {
+          acc[k] = x.growth[k]
+        } else if (x.growth[prevK] !== undefined) {
+          acc[k] = x.growth[prevK]
+        } else {
+          acc[k] = allDates[k]
+        }
+
         return acc
       }, {})
     })
