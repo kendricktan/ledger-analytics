@@ -51,7 +51,6 @@ export default class StackedArea extends Component {
     // Need to fill in empty dates
     // Start by finding all dates
     const allDates = stackedAreaData.reduce((acc, x) => {
-      // In-place mutation. Ugh
       Object.keys(x.growth).map(k => {
         acc[k] = 0
         return 0
@@ -59,17 +58,29 @@ export default class StackedArea extends Component {
 
       return acc
     }, {})
+    const dateSorted = Object.keys(allDates).sort()
 
     // Fill in empty dates
     const stackedDataFixed = stackedAreaData.map(x => {
-      return Object.keys(allDates).reduce((acc, k) => {
-        acc[k] = x.growth[k] || allDates[k]
+      return dateSorted.reduce((acc, k) => {
+        const kSplit = k.split('/')
+        let year = parseInt(kSplit[0], 10)
+        let month = parseInt(kSplit[1], 10)
+        let prevMonth = month - 1
+
+        if (prevMonth <= 0) {
+          prevMonth = 12
+          year = year - 1
+        }
+
+        const prevK = year + '/' + (prevMonth + '').padStart(2, '0')
+        
+        acc[k] = x.growth[k] || x.growth[prevK] || allDates[k]
         return acc
       }, {})
     })
 
     // Convert to series data
-    const dateSorted = Object.keys(allDates).sort()
     const stackedSeriesData = stackedDataFixed.map((x, idx) => {
       return {
         name: stackedAreaAccounts[idx],
