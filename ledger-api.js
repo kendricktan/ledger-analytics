@@ -128,7 +128,7 @@ class LedgerApi {
       this._file +
       this._query +
       this._commodity +
-      ` -j -M` +
+      ` -J -M` +
       this._extraArgs +
       ` --collapse` +
       ` --plot-total-format="%(format_date(date, "%Y-%m-%d")) %(abs(quantity(scrub(display_total))))"`.split('\n').join('')
@@ -146,6 +146,8 @@ class LedgerApi {
 
         return acc
       }, {})
+
+    console.log(growth)
 
     return { growth }
   };
