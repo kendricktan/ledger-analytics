@@ -55,7 +55,7 @@ class LedgerApi {
 
   extraArgs (_extraArgs = ``) {
     const clone = cloneInstance(this)
-    clone.extraArgs = cleanInput(_extraArgs)
+    clone._extraArgs = cleanInput(_extraArgs)
     return clone
   };
 
