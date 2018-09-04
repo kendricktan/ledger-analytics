@@ -52,6 +52,10 @@ $ assets:stocks and not assets:crypto
 
 # Releases
 
+### 0.1.9a (2018/09/04)
+- Fixed `extraArgs` bug (thanks to [rohieb](https://github.com/rohieb))
+  - TODO: Write tests to accomodate for that
+
 ### 0.1.8a (2018/08/30)
 - Updated frontend
 
